@@ -1,0 +1,4 @@
+const CERT_KEY =
+  "FaPkOSPtPm9DMKTUMmNbjRer9WuNWHgLEwAeRIT1vpXEqtGlKjc4Z3t1oILWw%2Fdk4i7HwI8NukVKEx5IHTjFrg%3D%3D";
+
+export { CERT_KEY };
