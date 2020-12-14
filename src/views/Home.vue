@@ -1,8 +1,11 @@
 <template>
   <div class="home">
     <h1>{{ title }}</h1>
+    <Test />
     <p>titleLength: {{ titleLength }}</p>
     <button @click="updateTitle('changed title')">update title</button>
+    <p>getCommonData: {{ commonData }}</p>
+    <button @click="goActions">increase common data</button>
     <table>
       <thead>
         <tr>
@@ -33,28 +36,38 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watchEffect } from "vue";
+import { computed, defineComponent, ref } from "vue";
 // import useSearch from "@/use/search";
 import axios from "axios";
+import store from "@/store/index";
+import Test from "@/components/Test.vue";
 
 // import { CERT_KEY } from "@/static/const";
 
 export default defineComponent({
+  components: {
+    Test
+  },
   setup() {
+    // console.warn(store);
     const title = ref("Vue 3 + TS + Vuex + Vue Router");
+    const count = ref(0);
     const lists = ref([]);
     const titleLength = computed(() => title.value.length);
     const updateTitle = newValue => {
       title.value = newValue;
     };
-
-    watchEffect(() => {
-      console.log(title.value);
+    const commonData = computed(() => {
+      return store.getters.getCommonData;
     });
 
-    setTimeout(() => {
-      title.value = "1111111";
-    }, 2000);
+    // watchEffect(() => {
+    //   console.log(title.value);
+    // });
+
+    // setTimeout(() => {
+    //   title.value = "1111111";
+    // }, 2000);
 
     const decreaseLength = () => {
       lists.value.length--;
@@ -69,10 +82,10 @@ export default defineComponent({
           }
         })
         // .get(
-        //   "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson",
+        //   `http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson`,
         //   {
         //     params: {
-        //       serviceKey: CERT_KEY,
+        //       serviceKey: encodeURIComponent(CERT_KEY),
         //       pageNo: 1,
         //       numOfRows: 10,
         //       startCreateDt: 20201111,
@@ -88,13 +101,19 @@ export default defineComponent({
 
     fetchCommonData();
 
+    const goActions = function() {
+      store.dispatch("setCommonData", count.value++);
+    };
+
     return {
       title,
       titleLength,
       updateTitle,
       lists,
       decreaseLength,
-      fetchCommonData
+      fetchCommonData,
+      commonData,
+      goActions
     };
   }
 });
