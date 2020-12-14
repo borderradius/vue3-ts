@@ -16,13 +16,13 @@
           <th>photo</th>
         </tr>
       </thead>
-      <tbody v-if="!lists.length">
+      <tbody v-if="!getLists.length">
         <tr>
           <td>데이터가 없습니다.</td>
         </tr>
       </tbody>
       <tbody v-else>
-        <tr v-for="item in lists" :key="item.no">
+        <tr v-for="item in getLists" :key="item.no">
           <td>{{ item.no }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.tel }}</td>
@@ -31,6 +31,7 @@
         </tr>
       </tbody>
     </table>
+    <button @click="setLists">리스트 api 통신 actions</button>
     <button @click="decreaseLength">decrease length</button>
   </div>
 </template>
@@ -41,6 +42,7 @@ import { computed, defineComponent, ref } from "vue";
 import axios from "axios";
 import store from "@/store/index";
 import Test from "@/components/Test.vue";
+import { mapGetters } from "vuex";
 
 // import { CERT_KEY } from "@/static/const";
 
@@ -99,12 +101,18 @@ export default defineComponent({
         });
     };
 
-    fetchCommonData();
+    // fetchCommonData();
 
     const goActions = function() {
       store.dispatch("setCommonData", count.value++);
     };
 
+    const setLists = function() {
+      store.dispatch("setLists", {
+        pageno: 1,
+        pagesize: 4
+      });
+    };
     return {
       title,
       titleLength,
@@ -113,8 +121,12 @@ export default defineComponent({
       decreaseLength,
       fetchCommonData,
       commonData,
-      goActions
+      goActions,
+      setLists
     };
+  },
+  computed: {
+    ...mapGetters(["getLists"])
   }
 });
 </script>
