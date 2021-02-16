@@ -4,7 +4,8 @@ import { createStore } from "vuex";
 export default createStore({
   state: {
     commonData: 0,
-    lists: []
+    lists: [],
+    covid: {}
   },
   getters: {
     getCommonData(state) {
@@ -12,6 +13,9 @@ export default createStore({
     },
     getLists(state) {
       return state.lists;
+    },
+    getCovid(state) {
+      return state.covid;
     }
   },
   mutations: {
@@ -20,11 +24,13 @@ export default createStore({
     },
     SET_LISTS(state, payload) {
       state.lists = payload;
+    },
+    SET_COVID(state, payload) {
+      state.covid = payload;
     }
   },
   actions: {
     setCommonData({ commit }, params) {
-      console.warn(params);
       commit("SET_COMMON_DATA", params);
     },
     async setLists({ commit }, params) {
@@ -35,6 +41,15 @@ export default createStore({
         }
       );
       commit("SET_LISTS", data.contacts);
+    },
+    async setCovid({ commit }, params) {
+      const { data } = await Axios.get(
+        "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson",
+        {
+          params
+        }
+      );
+      commit("SET_COVID", data.contacts);
     }
   },
   modules: {}
